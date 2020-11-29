@@ -3,13 +3,13 @@
 
 > 基于Google Android JetPack官方建议的框架来设计
 
-![静态结构](C:\Users\peichendong\Desktop\draw\final-architecture.png)
+![模型](https://raw.githubusercontent.com/1122pcd1122/My-picture/master/weatherApp/final-architecture.png)
 
 ## 第一次提交
 
 ### 模型图
 
-​																				<img src="C:\Users\peichendong\Desktop\draw\第一次模型图.png" alt="模型图"  />  
+​																				<img src="https://raw.githubusercontent.com/1122pcd1122/My-picture/master/weatherApp/%E7%AC%AC%E4%B8%80%E6%AC%A1%E6%A8%A1%E5%9E%8B%E5%9B%BE.png" alt="模型图"  />  
 
 
 
@@ -37,15 +37,15 @@ setValue与postValue的区别:
 
 在主线程中setValue的优先级比postValue的优先级高,如果在主线程中先执行setValue
 
-<img src="C:%5CUsers%5Cpeichendong%5CDesktop%5Cdraw%5CpostValue.png" alt="postValue" style="zoom:80%;" />
+<img src="https://raw.githubusercontent.com/1122pcd1122/My-picture/master/weatherApp/postValue.png" alt="postValue" style="zoom:80%;" />
 
-<img src="C:%5CUsers%5Cpeichendong%5CDesktop%5Cdraw%5CsetValue.png" alt="setValue" style="zoom:80%;" />
+<img src="https://raw.githubusercontent.com/1122pcd1122/My-picture/master/weatherApp/setValue.png" alt="setValue" style="zoom:80%;" />
 
 ## 第二次提交
 
 ### 模型图
 
-![第二次模型图](C:%5CUsers%5Cpeichendong%5CDesktop%5Cdraw%5C%E7%AC%AC%E4%BA%8C%E6%AC%A1%E6%A8%A1%E5%9E%8B%E5%9B%BE.png)
+![第二次模型图](https://raw.githubusercontent.com/1122pcd1122/My-picture/master/weatherApp/%E7%AC%AC%E4%BA%8C%E6%AC%A1%E6%A8%A1%E5%9E%8B%E5%9B%BE.png)
 
 ### 实现的模块
 
