@@ -9,16 +9,15 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,22 +28,10 @@ import java.util.List;
 
 public class WeatherFragment extends Fragment {
 
-    private WeatherViewModel mViewModel;
-    private FutureViewModel futureViewModel;
+    private WeatherViewModel weatherViewModel;
     private WeatherFragmentBinding binding;
-
-
-    OnHeadlineSelectedListener callback;
-
-
-
-    public interface OnHeadlineSelectedListener {
-        public void onArticleSelected(int position);
-    }
-
-    public void setOnHeadlineSelectedListener(OnHeadlineSelectedListener callback) {
-        this.callback = callback;
-    }
+    private RecyclerView recyclerView;
+    private Toast toast ;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -52,65 +39,102 @@ public class WeatherFragment extends Fragment {
         binding= DataBindingUtil.inflate ( inflater, R.layout.weather_fragment,container,false  );
 
 
-        RecyclerView recyclerView= binding.recycleView;
+        //设置recycleView的view
+        recyclerView= binding.recycleView;
         RecyclerView.LayoutManager layoutManager=new LinearLayoutManager ( getContext () );
         recyclerView.setLayoutManager ( layoutManager );
 
-        binding.select.setOnClickListener ( new View.OnClickListener () {
-            @Override
-            public void onClick(View v) {
+        //获取天气信息
+        getWeather ();
 
-                String city=binding.ediText.getText ().toString ();
-                mViewModel.getRealtimeLiveData (city).observe ( WeatherFragment.this, new Observer<Realtime> () {
-                    @SuppressLint("SetTextI18n")
-                    @Override
-                    public void onChanged(Realtime realtime) {
-                        if (realtime.getInfo ().equals ( "无法获取连接地址" )){
-                            Toast.makeText ( getContext (), "无法获取连接地址", Toast.LENGTH_SHORT ).show ();
-                            return;
-                        }
-                        binding.temperature.setText ( realtime.getTemperature ()+"℃" );
-                        binding.info.setText ( realtime.getInfo () );
-                        binding.aqi.setText ( realtime.getAqi () );
-                        binding.wid.setText ( realtime.getWid () );
-                        binding.direct.setText ( realtime.getDirect () );
-                        binding.humidity.setText ( realtime.getHumidity () );
-
-                        Log.d ( "ViewModel",realtime.getAqi ()
-                                +realtime.getDirect ()
-                                +realtime.getHumidity ()
-                                +realtime.getPower ()
-                                +realtime.getTemperature ()
-                                +realtime.getPower ()
-                        );
-                    }
-                } );
-
-                futureViewModel.getListLiveData ( city ).observe ( WeatherFragment.this, new Observer<List<Future>> () {
-                    @Override
-                    public void onChanged(List<Future> futures) {
-                        if (futures.size () == 0){
-                            Toast.makeText ( getContext (), "无法获取连接地址", Toast.LENGTH_SHORT ).show ();
-                            return;
-                        }
-                        FutureAdapter futureAdapter=new FutureAdapter (getContext (),futures);
-                        recyclerView.setAdapter ( futureAdapter );
-                    }
-                } );
-
-            }
-        } );
 
 
         return binding.getRoot ();
     }
 
+
+    /**
+     * @param savedInstanceState 保存状
+     * 获取两个ViewModel实例
+     */
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated ( savedInstanceState );
-        mViewModel = new ViewModelProvider ( this ).get ( WeatherViewModel.class );
-        futureViewModel=new ViewModelProvider ( this ).get ( FutureViewModel.class );
+        weatherViewModel = new ViewModelProvider ( this ).get ( WeatherViewModel.class );
     }
 
-   
+    /**
+     * 获取天气信息
+     */
+    public void getWeather(){
+        binding.select.setOnClickListener ( new View.OnClickListener () {
+            @Override
+            public void onClick(View v) {
+                String city=binding.ediText.getText ().toString ();
+
+                if (city.equals ( "" )){
+                    Toast.makeText ( getContext (), "请输入城市信息", Toast.LENGTH_SHORT ).show ();
+                }else {
+                    setRealTime (city);
+                }
+
+
+            }
+        } );
+    }
+
+
+    /**
+     * 显示今日天气
+     * @param city 城市
+     */
+    public void setRealTime(String city){
+        weatherViewModel.getWeatherRepository ( city );
+
+        weatherViewModel.getRealTime ().observe ( WeatherFragment.this, new Observer<Realtime> () {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onChanged(Realtime realtime) {
+
+                binding.temperature.setText ( realtime.getTemperature ()+"℃" );
+                binding.info.setText ( realtime.getInfo () );
+                binding.aqi.setText ( realtime.getAqi () );
+                binding.wid.setText ( realtime.getWid () );
+                binding.direct.setText ( realtime.getDirect () );
+                binding.humidity.setText ( realtime.getHumidity () );
+
+
+            }
+        } );
+
+        weatherViewModel.getFutures ().observe ( WeatherFragment.this, new Observer<List<Future>> () {
+            @Override
+            public void onChanged(List<Future> futures) {
+
+                FutureAdapter futureAdapter = new FutureAdapter ( getContext (), futures );
+                recyclerView.setAdapter ( futureAdapter );
+
+
+            }
+        } );
+
+       weatherViewModel.getStatusInfo ().observe ( WeatherFragment.this, new Observer<String> () {
+           @SuppressLint("ShowToast")
+           @Override
+           public void onChanged(String s) {
+               if (toast == null){
+                   toast = Toast.makeText ( getContext (),s,Toast.LENGTH_SHORT );
+               }else {
+                   toast.setText ( s );
+               }
+               toast.show ();
+           }
+       } );
+
+
+    }
+
+
+
+
 }

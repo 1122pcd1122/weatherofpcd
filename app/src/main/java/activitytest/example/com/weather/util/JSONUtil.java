@@ -11,24 +11,12 @@ import activitytest.example.com.weather.db.model.Realtime;
 import androidx.lifecycle.LiveData;
 
 public class JSONUtil {
-    public static Realtime getRealTime(String s){
+
+    public static JsonRootBean getWeather(String s){
         Gson gson=new Gson ();
-        JsonRootBean jsonRootBean= gson.fromJson ( s,JsonRootBean.class );
-        if (jsonRootBean.getError_code () == 10012){
-                Realtime realtime=new Realtime ();
-                realtime.setInfo ( "无法获取连接地址" );
-            return realtime;
-        }
-        return jsonRootBean.getResult ().getRealtime ();
+        return gson.fromJson ( s,JsonRootBean.class );
     }
 
-    public static List<Future> getFuture(String s){
-        Gson gson=new Gson ();
-        JsonRootBean jsonRootBean= gson.fromJson ( s,JsonRootBean.class );
-        if (jsonRootBean.getError_code () == 10012){
-            return new ArrayList<Future> ();
-        }
-        return jsonRootBean.getResult ().getFuture ();
-    }
+
 }
 

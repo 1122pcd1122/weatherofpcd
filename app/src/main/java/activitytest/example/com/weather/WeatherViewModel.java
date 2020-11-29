@@ -1,53 +1,38 @@
 package activitytest.example.com.weather;
 
-import android.util.Log;
+import android.app.Application;
 
-import org.jetbrains.annotations.NotNull;
+import java.util.List;
 
-import java.io.IOException;
-import java.util.Objects;
-
+import activitytest.example.com.weather.db.model.Future;
 import activitytest.example.com.weather.db.model.Realtime;
-import activitytest.example.com.weather.util.JSONUtil;
-import activitytest.example.com.weather.util.OkhttpUtil;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 public class WeatherViewModel extends ViewModel {
-    // TODO: Implement the ViewModel
-
-    public static MutableLiveData<Realtime> realtimeLiveData;
 
 
-    public MutableLiveData<Realtime> getRealtimeLiveData(String city) {
-        if (realtimeLiveData == null){
-            realtimeLiveData =new MutableLiveData<> ();
 
-        }
-        setRealtimeLiveData ( city );
-        return realtimeLiveData;
+    public WeatherRepository weatherRepository;
+
+
+    public void getWeatherRepository(String city) {
+        weatherRepository = WeatherRepository.getRepository ();
+        weatherRepository.getWeatherNetWork ( city );
     }
 
-    public void setRealtimeLiveData(String city) {
-        OkhttpUtil.getWeather ( city, new Callback () {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Log.d ( "ViewModel","获取失败" );
-            }
+    public LiveData<Realtime> getRealTime(){
 
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                Log.d ( "ViewModel","获取成功" );
-                String jsonBeanEnity = Objects.requireNonNull ( response.body () ).string ();
-                Log.d ( "ViewModel",  jsonBeanEnity);
+        return weatherRepository.getRealtime ();
+    }
 
-                Realtime realtime = JSONUtil.getRealTime ( jsonBeanEnity );
-                realtimeLiveData.postValue ( realtime );
-            }
-        } );
+    public LiveData<String> getStatusInfo(){
+        return weatherRepository.getStatus_Code ();
+    }
+
+    public LiveData<List<Future>> getFutures(){
+        return weatherRepository.getFutures ();
     }
 }

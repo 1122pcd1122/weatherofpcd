@@ -8,19 +8,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
-import activitytest.example.com.weather.FutureViewModel;
 import activitytest.example.com.weather.R;
 import activitytest.example.com.weather.db.model.Future;
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.Observer;
-import androidx.paging.PagedListAdapter;
-import androidx.recyclerview.widget.AsyncDifferConfig;
-import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class FutureAdapter extends RecyclerView.Adapter<FutureAdapter.FutureViewHolder> {

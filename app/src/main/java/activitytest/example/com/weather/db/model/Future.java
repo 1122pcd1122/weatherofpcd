@@ -9,7 +9,7 @@ import java.util.Date;
  * @author json.cn (i@json.cn)
  * @website http://www.json.cn/java2pojo/
  */
-public class Future {
+public class    Future {
 
     private Date date;
     private String temperature;
