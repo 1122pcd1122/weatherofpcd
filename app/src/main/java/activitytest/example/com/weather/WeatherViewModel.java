@@ -11,15 +11,20 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
-public class WeatherViewModel extends ViewModel {
+public class WeatherViewModel extends AndroidViewModel {
 
 
 
     public WeatherRepository weatherRepository;
+    public Application application;
+    public WeatherViewModel(@NonNull Application application) {
+        super ( application );
+        this.application = application;
+    }
 
 
     public void getWeatherRepository(String city) {
-        weatherRepository = WeatherRepository.getRepository ();
+        weatherRepository = WeatherRepository.getRepository (application);
         weatherRepository.getWeatherNetWork ( city );
     }
 

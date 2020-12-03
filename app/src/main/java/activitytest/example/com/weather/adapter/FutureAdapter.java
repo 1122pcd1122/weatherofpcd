@@ -56,13 +56,13 @@ public class FutureAdapter extends RecyclerView.Adapter<FutureAdapter.FutureView
         Future future=futureList.get ( position );
         holder.temperature.setText ( future.getTemperature () );
         holder.direct.setText ( future.getDirect () );
-        holder.night.setText ( future.getWid ().getNight () );
-        holder.day.setText ( future.getWid ().getDay () );
+//        holder.night.setText ( future.getWid ().getNight () );
+//        holder.day.setText ( future.getWid ().getDay () );
         holder.weather.setText ( future.getWeather () );
-        @SuppressLint("SimpleDateFormat")
-        SimpleDateFormat simpleDateFormat=new SimpleDateFormat ( "yyyy-MM-dd" );
-        String format = simpleDateFormat.format ( future.getDate () );
-        holder.date.setText ( format );
+//        @SuppressLint("SimpleDateFormat")
+//        SimpleDateFormat simpleDateFormat=new SimpleDateFormat ( "yyyy-MM-dd" );
+//        String format = simpleDateFormat.format ( future.getDate () );
+        holder.date.setText (future.getDate () );
 
     }
 
