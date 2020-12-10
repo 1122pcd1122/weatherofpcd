@@ -1,28 +1,26 @@
 package activitytest.example.com.weather.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import activitytest.example.com.weather.R;
-import activitytest.example.com.weather.db.model.Future;
+import activitytest.example.com.weather.db.bean.Daily;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class FutureAdapter extends RecyclerView.Adapter<FutureAdapter.FutureViewHolder> {
 
     private final Context context;
-    private final List<Future> futureList;
+    private final List<Daily> dailyList;
 
-    public FutureAdapter(Context context, List<Future> futureList) {
+    public FutureAdapter(Context context, List<Daily> futureList) {
         this.context=context;
-        this.futureList=futureList;
+        this.dailyList=futureList;
 
     }
 
@@ -53,23 +51,14 @@ public class FutureAdapter extends RecyclerView.Adapter<FutureAdapter.FutureView
 
     @Override
     public void onBindViewHolder(@NonNull FutureViewHolder holder, int position) {
-        Future future=futureList.get ( position );
-        holder.temperature.setText ( future.getTemperature () );
-        holder.direct.setText ( future.getDirect () );
-//        holder.night.setText ( future.getWid ().getNight () );
-//        holder.day.setText ( future.getWid ().getDay () );
-        holder.weather.setText ( future.getWeather () );
-//        @SuppressLint("SimpleDateFormat")
-//        SimpleDateFormat simpleDateFormat=new SimpleDateFormat ( "yyyy-MM-dd" );
-//        String format = simpleDateFormat.format ( future.getDate () );
-        holder.date.setText (future.getDate () );
+
 
     }
 
 
     @Override
     public int getItemCount() {
-        return futureList.size ();
+        return dailyList.size ();
     }
 
 

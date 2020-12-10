@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cityName">尖草坪区</string>
+    <string name="obsTime">2020–12 20:15</string>
+    <string name="temp">1</string>
+    <string name="text">晴</string>]
+    <string name="windDir">西风</string>
+    <string name="windSpeed">3</string>
+    <string name="windScale">1</string>
+    <string name="humidity">57</string>
+    <string name="precip">0.00</string>
+    <string name="pressure">1017</string>
+    <string name="vis">8</string>
+    <string name="cloud">0</string>
+    <string name="dew">-8</string>
+    <string name="advice">lllll</string>
+</resources>

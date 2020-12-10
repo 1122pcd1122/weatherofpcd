@@ -1,32 +1,29 @@
 package activitytest.example.com.weather;
 
-import android.annotation.SuppressLint;
 import android.app.Application;
-import android.content.Context;
-import android.icu.lang.UCharacter;
-import android.os.AsyncTask;
-import android.os.Looper;
 import android.util.Log;
-import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
-import activitytest.example.com.weather.db.Dao.FutureDao;
-import activitytest.example.com.weather.db.Dao.RealTimeDao;
-import activitytest.example.com.weather.db.WeatherDB;
-import activitytest.example.com.weather.db.model.Future;
-import activitytest.example.com.weather.db.model.JsonRootBean;
-import activitytest.example.com.weather.db.model.Realtime;
+import activitytest.example.com.weather.db.bean.Daily;
+import activitytest.example.com.weather.db.bean.Now;
+import activitytest.example.com.weather.db.bean.Root7D;
+import activitytest.example.com.weather.db.bean.RootToday;
 import activitytest.example.com.weather.util.JSONUtil;
 import activitytest.example.com.weather.util.OkhttpUtil;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.RoomMasterTable;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -35,34 +32,28 @@ public class WeatherRepository {
 
     public static WeatherRepository repository;
 
-    private static MutableLiveData<Realtime> realtimeMutableLiveData;
-    private static MutableLiveData<List<Future>> futuresMutableLivaData;
+    private static MutableLiveData<Now> nowMutableLiveData;
+    private static MutableLiveData<List<Daily>> listDailyMutableLiveData;
     private static MutableLiveData<String> statusInfoMutableLiveData;
 
 
-
     private static final String TAG="WeatherRepository";
-
-    public static FutureDao futureDao;
-    public static RealTimeDao realTimeDao;
 
 
     public static WeatherRepository getRepository(Application application){
         if (repository == null){
             repository = new WeatherRepository ();
-            realtimeMutableLiveData = new MutableLiveData<> ();
-            futuresMutableLivaData = new MutableLiveData<> ();
+            nowMutableLiveData = new MutableLiveData<> ();
+            listDailyMutableLiveData = new MutableLiveData<> ();
             statusInfoMutableLiveData = new MutableLiveData<> ();
-            WeatherDB weatherDB = WeatherDB.getDatabase ( application.getApplicationContext () );
-            futureDao = weatherDB.getFutureDao ();
-            realTimeDao = weatherDB.getRealTimeDao ();
+
         }
 
         return repository;
     }
 
-    public void getWeatherNetWork(String city){
-        OkhttpUtil.getWeather ( city, new Callback () {
+    public void getTodayNetWork(int cityID){
+        OkhttpUtil.getToday ( cityID, new Callback () {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Log.d ( TAG,"网络连接失败" );
@@ -74,21 +65,57 @@ public class WeatherRepository {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 Log.d ( TAG,"网络连接成功" );
                 String s = Objects.requireNonNull ( response.body () ).string ();
-                JsonRootBean weather = JSONUtil.getWeather ( s );
 
-                statusInfoMutableLiveData.postValue (weather.getReason ());
+                Log.d ( TAG,"今日天气"+s );
 
-                if (weather.getError_code () == 0){
-                    Realtime realtime = weather.getResult ().getRealtime ();
-                    realtimeMutableLiveData.postValue ( realtime );
-                    new DeleteAsyncTask1 ( realTimeDao ).execute ();
-                    new InsertAsyncTask1 ( realTimeDao ).execute ( realtime );
-                    List<Future> futureList = weather.getResult ().getFuture ();
-                    futuresMutableLivaData.postValue ( futureList );
-                    new DeleteAsyncTask ( futureDao ).execute (  );
-                    new InsertAsyncTask ( futureDao ).execute (  futureList.toArray ( new Future[0] ) );
+                RootToday rootToDay = JSONUtil.getRootToDay ( s );
+                String ErrorCode = rootToDay.getCode ();
+
+                if (ErrorCode.equals ( "200" )){
+                    nowMutableLiveData.postValue ( rootToDay.getNow ());
                 }
 
+
+                Log.d ( TAG,"状态码:"+rootToDay.getCode ()+"" );
+                Log.d ( TAG,"该城市的天气预报和实况自适应网页"+rootToDay.getFxLink ()+"" );
+                Log.d ( TAG,"更新时间"+rootToDay.getUpdateTime () +"");
+                Log.d ( TAG,"即时天气"+rootToDay.getNow ());
+                Log.d ( TAG,"天气资源"+rootToDay.getRefer ().getSources ().get ( 0 ) );
+                Log.d ( TAG,"许可证"+rootToDay.getRefer ().getLicense ().get ( 0 ) );
+
+            }
+        } );
+    }
+
+    public void get7DNetWork(int cityID){
+        OkhttpUtil.get7D ( cityID, new Callback () {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Log.d ( TAG,"网络连接失败" );
+
+                statusInfoMutableLiveData.postValue ( "网络连接失败" );
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                Log.d ( TAG,"网络连接成功" );
+                String s = Objects.requireNonNull ( response.body () ).string ();
+
+                Log.d ( TAG,"七日天气"+s );
+
+                Root7D root7D = JSONUtil.getRoot7D ( s );
+                String ErrorCode = root7D.getCode ();
+
+                if (ErrorCode.equals ( "200" )){
+                    listDailyMutableLiveData.postValue ( root7D.getDaily () );
+                }
+
+                Log.d ( TAG,"状态码:"+root7D.getCode ()+"" );
+                Log.d ( TAG,"该城市的天气预报和实况自适应网页"+root7D.getFxLink ()+"" );
+                Log.d ( TAG,"更新时间"+root7D.getUpdateTime () +"");
+                Log.d ( TAG,"即时天气"+root7D.getDaily () );
+                Log.d ( TAG,"天气资源"+root7D.getRefer ().getSources ().get ( 0 ) );
+                Log.d ( TAG,"许可证"+root7D.getRefer ().getLicense ().get ( 0 ) );
 
             }
         } );
@@ -97,22 +124,22 @@ public class WeatherRepository {
     /**
      * @return 获取今日天气
      */
-    public LiveData<Realtime> getRealtime(){
+    public LiveData<Now> getToday(){
 //        if (realTimeDao.getRealTime ().getValue () != null){
 //            return realTimeDao.getRealTime ();
 //        }
-        return realtimeMutableLiveData;
+        return nowMutableLiveData;
     }
 
     /**
      * @return 获取未来五天的天气
      */
-    public LiveData<List<Future>> getFutures(){
+    public LiveData<List<Daily>> get7D(){
 
 //        if (Objects.requireNonNull ( futureDao.getFutures ().getValue () ).size () != 0){
 //            return futureDao.getFutures ();
 //        }
-        return futuresMutableLivaData;
+        return listDailyMutableLiveData;
     }
 
     /**
@@ -123,68 +150,68 @@ public class WeatherRepository {
         return statusInfoMutableLiveData;
     }
 
-    static class InsertAsyncTask extends AsyncTask<Future ,Void ,Void>{
-
-        FutureDao futureDao;
-
-        public InsertAsyncTask(FutureDao futureDao) {
-            this.futureDao = futureDao;
-        }
-
-        @Override
-        protected Void doInBackground(Future... futures) {
-            futureDao.insertFutures ( futures );
-            return null;
-        }
-    }
-
-    static class DeleteAsyncTask extends AsyncTask<Future ,Void ,Void>{
-
-        FutureDao futureDao;
-
-        public DeleteAsyncTask(FutureDao futureDao) {
-            this.futureDao = futureDao;
-        }
-
-        @Override
-        protected Void doInBackground(Future... futures) {
-            futureDao.deleteAllFuture ();
-            return null;
-        }
-    }
-
-
-    static class InsertAsyncTask1 extends AsyncTask<Realtime ,Void ,Void>{
-
-        RealTimeDao realTimeDao;
-
-        public InsertAsyncTask1(RealTimeDao realTimeDao) {
-            this.realTimeDao = realTimeDao;
-        }
-
-
-        @Override
-        protected Void doInBackground(Realtime... realtimes) {
-            realTimeDao.insertRealTime ( realtimes );
-            return null;
-        }
-    }
-
-    static class DeleteAsyncTask1 extends AsyncTask<Realtime ,Void ,Void>{
-
-        RealTimeDao realTimeDao;
-
-        public DeleteAsyncTask1(RealTimeDao realTimeDao) {
-            this.realTimeDao = realTimeDao;
-        }
-
-
-        @Override
-        protected Void doInBackground(Realtime... realtimes) {
-            realTimeDao.deleteAllRealTime ();
-            return null;
-        }
-    }
+//    static class InsertAsyncTask extends AsyncTask<Future ,Void ,Void>{
+//
+//        FutureDao futureDao;
+//
+//        public InsertAsyncTask(FutureDao futureDao) {
+//            this.futureDao = futureDao;
+//        }
+//
+//        @Override
+//        protected Void doInBackground(Future... futures) {
+//            futureDao.insertFutures ( futures );
+//            return null;
+//        }
+//    }
+//
+//    static class DeleteAsyncTask extends AsyncTask<Future ,Void ,Void>{
+//
+//        FutureDao futureDao;
+//
+//        public DeleteAsyncTask(FutureDao futureDao) {
+//            this.futureDao = futureDao;
+//        }
+//
+//        @Override
+//        protected Void doInBackground(Future... futures) {
+//            futureDao.deleteAllFuture ();
+//            return null;
+//        }
+//    }
+//
+//
+//    static class InsertAsyncTask1 extends AsyncTask<Realtime ,Void ,Void>{
+//
+//        RealTimeDao realTimeDao;
+//
+//        public InsertAsyncTask1(RealTimeDao realTimeDao) {
+//            this.realTimeDao = realTimeDao;
+//        }
+//
+//
+//        @Override
+//        protected Void doInBackground(Realtime... realtimes) {
+//            realTimeDao.insertRealTime ( realtimes );
+//            return null;
+//        }
+//    }
+//
+//    static class DeleteAsyncTask1 extends AsyncTask<Realtime ,Void ,Void>{
+//
+//        RealTimeDao realTimeDao;
+//
+//        public DeleteAsyncTask1(RealTimeDao realTimeDao) {
+//            this.realTimeDao = realTimeDao;
+//        }
+//
+//
+//        @Override
+//        protected Void doInBackground(Realtime... realtimes) {
+//            realTimeDao.deleteAllRealTime ();
+//            return null;
+//        }
+//    }
 
 
 

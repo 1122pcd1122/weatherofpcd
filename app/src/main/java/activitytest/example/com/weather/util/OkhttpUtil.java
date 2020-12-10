@@ -7,12 +7,19 @@ import okhttp3.Request;
 public class OkhttpUtil {
     public static final OkHttpClient client=new OkHttpClient ();
 
-    public static void getWeather(String city, Callback callback){
+    public static void getToday(int cityID, Callback callback){
         Request request=new Request .Builder ()
-                .url ( "http://apis.juhe.cn/simpleWeather/query?city="+city+"&key=5bc882c40fd42335f47b4055781d0390" )
+                .url ( "https://devapi.qweather.com/v7/weather/now?location="+cityID+"&key=42f589ec3d1f4fdb8c853522b5040b39" )
                 .get ()
                 .build ();
         client.newCall ( request ).enqueue ( callback );
     }
 
+    public static void get7D(int cityID, Callback callback){
+        Request request=new Request .Builder ()
+                .url ( "https://devapi.qweather.com/v7/weather/7d?location="+cityID+"&key=42f589ec3d1f4fdb8c853522b5040b39" )
+                .get ()
+                .build ();
+        client.newCall ( request ).enqueue ( callback );
+    }
 }

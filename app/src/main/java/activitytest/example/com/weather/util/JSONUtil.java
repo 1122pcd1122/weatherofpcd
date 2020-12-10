@@ -2,21 +2,22 @@ package activitytest.example.com.weather.util;
 
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.Type;
 
-import activitytest.example.com.weather.db.model.Future;
-import activitytest.example.com.weather.db.model.JsonRootBean;
-import activitytest.example.com.weather.db.model.Realtime;
-import androidx.lifecycle.LiveData;
+import activitytest.example.com.weather.db.bean.Root7D;
+import activitytest.example.com.weather.db.bean.RootToday;
 
 public class JSONUtil {
 
-    public static JsonRootBean getWeather(String s){
+    public static RootToday getRootToDay(String s){
         Gson gson=new Gson ();
-        return gson.fromJson ( s,JsonRootBean.class );
+        return gson.fromJson ( s, RootToday.class );
     }
 
+    public static Root7D getRoot7D(String s){
+        Gson gson = new Gson ();
+        return gson.fromJson ( s,Root7D.class);
+    }
 
 }
 

@@ -5,10 +5,11 @@
     <string name="temperature">…</string>
     <string name="wid">…</string>
     <string name="direct">…</string>
-    <string name="humidity">…</string>
     <string name="info">…</string>
     <string name="aqi">…</string>
     <string name="date">…</string>
     <string name="wid_day">…</string>
     <string name="wid_night">…</string>
+    <string name="todo">TODO</string>
+    <string name="speedWord">级</string>
 </resources>
