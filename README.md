@@ -77,3 +77,14 @@ Toast的连续显示问题,当有一个Toast还未显示完时,另一个Toast又
 
 如果当前Toast不为空则将需要显示的内容通过上一个Toast显示出来
 
+## 第三次提交
+
+1. 创建了数据库来保存全国的城市id
+
+2. 更改API为和风天气的API每天可以请求3000次!)
+
+   ![api](https://raw.githubusercontent.com/1122pcd1122/My-picture/master/weatherApp/API.png)
+
+3. 增加了定位功能,功能支持来自于百度地图
+
+   
