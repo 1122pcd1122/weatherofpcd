@@ -1,4 +1,4 @@
-package activitytest.example.com.weather.db.bean;
+package activitytest.example.com.weather.db.bean.today;
 
 
 

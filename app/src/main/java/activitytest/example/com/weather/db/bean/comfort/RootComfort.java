@@ -1,24 +1,24 @@
-package activitytest.example.com.weather.db.bean;
+package activitytest.example.com.weather.db.bean.comfort;
 
 
-import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 import java.util.List;
 
+import activitytest.example.com.weather.db.bean.Refer;
+
 /**
- * Auto-generated: 2020-12-09 15:39:28
+ * Auto-generated: 2020-12-13 12:6:11
  *
  * @author bejson.com (i@bejson.com)
  * @website http://www.bejson.com/java2pojo/
  */
-public class Root7D {
+public class RootComfort {
 
     private String code;
     private Date updateTime;
     private String fxLink;
-    @SerializedName ( "daily" )
-    private List<Daily> daily;
+    private List<ComfortNow> daily;
     private Refer refer;
     public void setCode(String code) {
         this.code = code;
@@ -41,10 +41,10 @@ public class Root7D {
         return fxLink;
     }
 
-    public void setDaily(List<Daily> daily) {
+    public void setComfortNow(List<ComfortNow> daily) {
         this.daily = daily;
     }
-    public List<Daily> getDaily() {
+    public List<ComfortNow> getComfortNow() {
         return daily;
     }
 
@@ -56,3 +56,4 @@ public class Root7D {
     }
 
 }
+

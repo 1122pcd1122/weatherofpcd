@@ -4,7 +4,7 @@ import android.app.Application;
 
 import java.util.List;
 
-import activitytest.example.com.weather.db.bean.Daily;
+import activitytest.example.com.weather.db.bean.seven7d.Daily;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;

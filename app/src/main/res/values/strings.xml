@@ -12,4 +12,11 @@
     <string name="wid_night">…</string>
     <string name="todo">TODO</string>
     <string name="speedWord">级</string>
+    <string name="c">℃</string>
+    <string name="bodyFeeling">体感温度:</string>
+    <string name="comfort">白天天气晴好，但仍会使您感觉偏冷，不舒适，请注意适时添加衣物，以防感冒。</string>
+    <string name="tempMax">-1</string>
+    <string name="xiegang">/</string>
+    <string name="tempMin">-2</string>
+    <string name="uv">3</string>
 </resources>

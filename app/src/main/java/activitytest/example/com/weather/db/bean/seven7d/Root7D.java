@@ -1,23 +1,27 @@
-package activitytest.example.com.weather.db.bean;
+package activitytest.example.com.weather.db.bean.seven7d;
 
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
+import java.util.List;
+
+import activitytest.example.com.weather.db.bean.Refer;
+import activitytest.example.com.weather.db.bean.seven7d.Daily;
 
 /**
- * Auto-generated: 2020-12-09 15:36:11
+ * Auto-generated: 2020-12-09 15:39:28
  *
  * @author bejson.com (i@bejson.com)
  * @website http://www.bejson.com/java2pojo/
  */
-public class RootToday {
+public class Root7D {
 
     private String code;
     private Date updateTime;
     private String fxLink;
-    @SerializedName ( "now" )
-    private Now now;
+    @SerializedName ( "daily" )
+    private List<Daily> daily;
     private Refer refer;
     public void setCode(String code) {
         this.code = code;
@@ -40,11 +44,11 @@ public class RootToday {
         return fxLink;
     }
 
-    public void setNow(Now now) {
-        this.now = now;
+    public void setDaily(List<Daily> daily) {
+        this.daily = daily;
     }
-    public Now getNow() {
-        return now;
+    public List<Daily> getDaily() {
+        return daily;
     }
 
     public void setRefer(Refer refer) {

@@ -3,27 +3,22 @@ package activitytest.example.com.weather;
 import android.app.Application;
 import android.util.Log;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
-import activitytest.example.com.weather.db.bean.Daily;
-import activitytest.example.com.weather.db.bean.Now;
-import activitytest.example.com.weather.db.bean.Root7D;
-import activitytest.example.com.weather.db.bean.RootToday;
+import activitytest.example.com.weather.db.bean.comfort.ComfortNow;
+import activitytest.example.com.weather.db.bean.comfort.RootComfort;
+import activitytest.example.com.weather.db.bean.seven7d.Daily;
+import activitytest.example.com.weather.db.bean.today.Now;
+import activitytest.example.com.weather.db.bean.seven7d.Root7D;
+import activitytest.example.com.weather.db.bean.today.RootToday;
 import activitytest.example.com.weather.util.JSONUtil;
 import activitytest.example.com.weather.util.OkhttpUtil;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.room.RoomDatabase;
-import androidx.room.RoomMasterTable;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -35,7 +30,7 @@ public class WeatherRepository {
     private static MutableLiveData<Now> nowMutableLiveData;
     private static MutableLiveData<List<Daily>> listDailyMutableLiveData;
     private static MutableLiveData<String> statusInfoMutableLiveData;
-
+    private static MutableLiveData<List<ComfortNow>> listComfortNowMutableLiveData;
 
     private static final String TAG="WeatherRepository";
 
@@ -46,6 +41,7 @@ public class WeatherRepository {
             nowMutableLiveData = new MutableLiveData<> ();
             listDailyMutableLiveData = new MutableLiveData<> ();
             statusInfoMutableLiveData = new MutableLiveData<> ();
+            listComfortNowMutableLiveData = new MutableLiveData<> ();
 
         }
 
@@ -121,6 +117,39 @@ public class WeatherRepository {
         } );
     }
 
+    public void getComfort(int cityID){
+        OkhttpUtil.getTodayComfort ( cityID, new Callback () {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Log.d ( TAG,"网络连接失败" );
+
+                statusInfoMutableLiveData.postValue ( "网络连接失败" );
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                Log.d ( TAG,"网络连接成功" );
+                String s = Objects.requireNonNull ( response.body () ).string ();
+
+                Log.d ( TAG,"今日舒适度:"+s );
+
+                RootComfort rootComfort = JSONUtil.getRootComfort ( s );
+                String ErrorCode = rootComfort.getCode ();
+
+                if (ErrorCode.equals ( "200" )){
+                    listComfortNowMutableLiveData.postValue ( rootComfort.getComfortNow () );
+                }
+
+                Log.d ( TAG,"状态码:"+rootComfort.getCode ()+"" );
+                Log.d ( TAG,"该城市的天气预报和实况自适应网页"+rootComfort.getFxLink ()+"" );
+                Log.d ( TAG,"更新时间"+rootComfort.getUpdateTime () +"");
+                Log.d ( TAG,"即时天气"+rootComfort.getComfortNow () );
+                Log.d ( TAG,"天气资源"+rootComfort.getRefer ().getSources ().get ( 0 ) );
+                Log.d ( TAG,"许可证"+rootComfort.getRefer ().getLicense ().get ( 0 ) );
+            }
+        } );
+    }
+
     /**
      * @return 获取今日天气
      */
@@ -140,6 +169,10 @@ public class WeatherRepository {
 //            return futureDao.getFutures ();
 //        }
         return listDailyMutableLiveData;
+    }
+
+    public LiveData<List<ComfortNow>> getComfortNow(){
+        return listComfortNowMutableLiveData;
     }
 
     /**
