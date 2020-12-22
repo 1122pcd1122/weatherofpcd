@@ -2,14 +2,20 @@
 package activitytest.example.com.weather;
 
 
+import activitytest.example.com.weather.adapter.AdviceAdapter;
 import activitytest.example.com.weather.adapter.FutureAdapter;
+import activitytest.example.com.weather.databinding.AdviceLayoutBinding;
+import activitytest.example.com.weather.databinding.TodayCardviewBinding;
 import activitytest.example.com.weather.databinding.WeatherFragmentBinding;
+import activitytest.example.com.weather.databinding.WeatherToolbarBinding;
 import activitytest.example.com.weather.db.CityDataBase;
 import activitytest.example.com.weather.db.Dao.CityDao;
+import activitytest.example.com.weather.db.bean.city.Location;
 import activitytest.example.com.weather.db.bean.comfort.ComfortNow;
 import activitytest.example.com.weather.db.bean.seven7d.Daily;
 import activitytest.example.com.weather.db.bean.today.Now;
 import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -30,8 +36,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import com.bumptech.glide.Glide;
+
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -41,95 +48,148 @@ public class WeatherFragment extends Fragment {
     private static final String TAG = "MY";
     private TodayViewModel todayViewModel;
     private Seven7DayViewModel seven7DayViewModel;
-    private WeatherFragmentBinding binding;
+    private LocationViewModel locationViewModel;
+    private WeatherFragmentBinding weatherFragmentBinding;
+    private TodayCardviewBinding todayCardviewBinding;
+    private AdviceLayoutBinding adviceLayoutBinding;
     private Toast toast ;
-    private String city;
-
-    private CityDao cityDao;
+    public String city;
 
 
-
-    /**
-     * @param savedInstanceState
-     * 获取两个ViewModel实例
-     */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate ( savedInstanceState );
-        todayViewModel = new ViewModelProvider ( this ).get ( TodayViewModel.class );
-        seven7DayViewModel= new ViewModelProvider ( this ).get ( Seven7DayViewModel.class );
-        CityDataBase cityDataBase = CityDataBase.getCitDataBase ( getContext ());
-        cityDao = cityDataBase.getCityDao ();
+        getDataBaseOrDao ();
+        getViewModelEntity ();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-         binding = DataBindingUtil.bind ( LayoutInflater.from ( getContext () ).inflate ( R.layout.weather_fragment, container, false ) );
+        weatherFragmentBinding = DataBindingUtil.bind ( LayoutInflater.from ( getContext () ).inflate ( R.layout.weather_fragment, container, false ) );
+        todayCardviewBinding  = DataBindingUtil.bind ( LayoutInflater.from ( getContext () ).inflate ( R.layout.today_cardview, container, false ) );
+        adviceLayoutBinding = DataBindingUtil.bind ( LayoutInflater.from ( getContext () ).inflate ( R.layout.advice_layout ,container,false) );
+        //设置recycleView样式
+        setRecycleViewModel ();
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager ( getContext () );
-        binding.sevenDay.setLayoutManager ( layoutManager );
 
+        getData ();
 
-
-        //获取当日天气
-        getLocalWeather ();
-
-        //获取天气
-        getWeather ();
-
-        return binding.getRoot ();
+        return weatherFragmentBinding.getRoot ();
     }
 
 
-    public void getLocalWeather(){
-        SharedPreferences sharedPreferences = Objects.requireNonNull ( getActivity () ).getSharedPreferences ( "City",Context.MODE_PRIVATE );
-        city = sharedPreferences.getString ( "City", null );
 
-        if (cityDao.getCity ( city ) != null){
-            int cityID = cityDao.getCity ( city ).cityID;
-            Log.d ( TAG, "本地位置:"+city  );
-            Log.d ( TAG,"此时城市"+city +"此时城市ID"+ cityDao.getCity ( city ).cityID +"" );
-            setToday ( cityID );
-            set7D ( cityID );
-        }else {
-            Toast.makeText ( getContext (), "未能确定位置", Toast.LENGTH_SHORT ).show ();
-        }
 
+    public void getData() {
+
+
+        //获取本地天气
+        getLocalWeather ();
+
+//        //获取其它城市的天气
+//        getWeather ();
+    }
+
+
+    public void getDataBaseOrDao() {
+
+        CityDataBase cityDataBase = CityDataBase.getCitDataBase ( getContext ());
+        CityDao cityDao = cityDataBase.getCityDao ();
+    }
+
+
+    public void getViewModelEntity() {
+
+        todayViewModel = new ViewModelProvider ( this ).get ( TodayViewModel.class );
+        seven7DayViewModel= new ViewModelProvider ( this ).get ( Seven7DayViewModel.class );
+        locationViewModel = new ViewModelProvider ( this ).get ( LocationViewModel.class );
+    }
+
+    private void setRecycleViewModel() {
+        //设置recycleView的样式
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager ( getContext (),RecyclerView.HORIZONTAL ,false);
+        RecyclerView.LayoutManager layoutManager1 = new LinearLayoutManager ( getContext (),RecyclerView.HORIZONTAL ,false);
+        weatherFragmentBinding.adviceRecycle.setLayoutManager ( layoutManager1 );
+        weatherFragmentBinding.sevenDay.setLayoutManager ( layoutManager );
     }
 
 
     /**
-     * 获取天气信息
+     * 获取当地天气
      */
-    public void getWeather(){
+    public void getLocalWeather(){
 
+        SharedPreferences sharedPreferences = Objects.requireNonNull ( getActivity () ).getSharedPreferences ( "City",Context.MODE_PRIVATE );
+        city = sharedPreferences.getString ( "City", "null" );
+        Log.d ( TAG,city );
 
-        //显示选择天气
-        binding.select.setOnClickListener ( new View.OnClickListener () {
+        if (city.equals ( "null" )){
+            Toast.makeText ( getContext (), "未能确定位置", Toast.LENGTH_SHORT ).show ();
+        }
+
+        locationViewModel.getWeatherRepository ( city );
+        Log.d ( TAG,locationViewModel.getLocation ()+"" );
+
+        locationViewModel.getLocation ().observe ( getViewLifecycleOwner(), new Observer<Location> () {
             @Override
-            public void onClick(View v) {
-             city =binding.ediText.getText ().toString ();
-                if (city.equals ( "" )){
-                    Toast.makeText ( getContext (), "请输入城市信息", Toast.LENGTH_SHORT ).show ();
+            public void onChanged(Location location) {
+                if (location == null){
+                    Toast.makeText ( getContext (), "未确定位置", Toast.LENGTH_SHORT ).show ();
                 }else {
-                    if (cityDao.getCity ( city ) == null){
-                        Toast.makeText ( getContext (), "请输入正确信息", Toast.LENGTH_SHORT ).show ();
-                    }else {
-                        int cityID = cityDao.getCity ( city ).cityID;
-                        Log.d ( TAG,"此时城市"+city +"此时城市ID"+ cityDao.getCity ( city ).cityID +"" );
-                        setToday ( cityID );
-                        set7D(cityID);
-                    }
-                }
 
+                    int cityID = Integer.parseInt (locationViewModel.getLocation ().getValue ().getId ());
+                    Log.d ( TAG, "本地位置:"+city  );
+                    Log.d ( TAG,"此时城市"+city +"此时城市ID"+ location.getId ()+"" );
+                    setToday ( cityID );
+                    set7D ( cityID );
+                }
             }
         } );
+
+
     }
 
-
-
-
+//
+//    /**
+//     * 获取天气信息
+//     */
+//    public void getWeather(){
+//
+//        //显示选择天气
+//        binding.select.setOnClickListener ( new View.OnClickListener () {
+//            @Override
+//            public void onClick(View v) {
+//             city =binding.ediText.getText ().toString ();
+//             locationViewModel.getWeatherRepository ( city );
+//             if (city.equals ( "" )){
+//                 Toast.makeText ( getContext (), "请输入城市信息", Toast.LENGTH_SHORT ).show ();
+//             }else {
+//                 locationViewModel.getLocation ().observe ( getViewLifecycleOwner (), new Observer<Location> () {
+//                     @Override
+//                     public void onChanged(Location location) {
+//                         if (location!=null)
+//                         {
+//                             int cityID = Integer.parseInt ( location.getId () );
+//                             Log.d ( TAG,"此时城市"+city +"此时城市ID"+ location.getId () +"" );
+//                             setToday ( cityID );
+//                             set7D(cityID);
+//
+//                         }else {
+//                             Toast.makeText ( getContext (), "未确定位置", Toast.LENGTH_SHORT ).show ();
+//
+//                         }
+//
+//                     }
+//
+//                 } );
+//             }
+//
+//            }
+//
+//        } );
+//
+//    }
 
     /**
      * 显示今日天气
@@ -137,56 +197,32 @@ public class WeatherFragment extends Fragment {
      */
     @SuppressLint("FragmentLiveDataObserve")
     public void setToday(int cityID){
-
-
         todayViewModel.getWeatherRepository ( cityID );
-
-
-        //天气信息
+        //天气数据
         todayViewModel.getToday ().observe ( this, new Observer<Now> () {
             @SuppressLint("CheckResult")
             @Override
             public void onChanged(Now now) {
-
-                binding.city.setText ( city );
-                Date obsTime = now.getObsTime ();
-
-                @SuppressLint("SimpleDateFormat")
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat ( "yyyy-MM-dd kk:mm" );
-                String format = simpleDateFormat.format ( obsTime );
-                binding.obsTime.setText ( format );
-                binding.temp.setText ( now.getTemp ());
-                binding.text.setText ( now.getText () );
-                binding.c1.setText ( "℃" );
-
-
+                weatherFragmentBinding.setCity ( city );
+                Calendar calendar = Calendar.getInstance ();
+                int i = calendar.get ( Calendar.DAY_OF_WEEK );
+                weatherFragmentBinding.setWeek ( "星期"+getWeek ( i ));
+                weatherFragmentBinding.setNow ( now );
+                Glide.with ( todayCardviewBinding.getRoot () ).load ( "https://raw.githubusercontent.com/qwd/WeatherIcon/master/weather-icon-S2/128/"+now.getIcon ()+".png" ).into ( todayCardviewBinding.weatherIcon);
             }
+
         } );
-
-
-        //状态信息
-        todayViewModel.getStatusInfo ().observe ( this, new Observer<String> () {
-            @SuppressLint("ShowToast")
-            @Override
-            public void onChanged(String s) {
-                if (toast == null){
-                    toast = Toast.makeText ( getContext (),s,Toast.LENGTH_SHORT );
-                }else {
-                    toast.setText ( s );
-                }
-                toast.show ();
-            }
-        } );
-
-
+        //提示信息
         todayViewModel.getComfortNow ().observe ( this, new Observer<List<ComfortNow>> () {
             @Override
             public void onChanged(List<ComfortNow> comFortNow) {
-                String text = comFortNow.get ( 0 ).getText ();
-                binding.comfort.setText ( text );
-            }
-        } );
 
+                AdviceAdapter adviceAdapter = new AdviceAdapter ( getContext (),comFortNow );
+                weatherFragmentBinding.adviceRecycle.setAdapter ( adviceAdapter );
+
+            }
+
+        } );
 
     }
 
@@ -195,30 +231,39 @@ public class WeatherFragment extends Fragment {
      * @param cityID 城市ID
      */
     private void set7D(int cityID) {
+        //从仓库中获取数据
         seven7DayViewModel.getWeatherRepository ( cityID );
         seven7DayViewModel.getDaily ().observe ( getViewLifecycleOwner(), new Observer<List<Daily>> () {
             @Override
             public void onChanged(List<Daily> dailies) {
                 FutureAdapter futureAdapter = new FutureAdapter ( getContext (),dailies );
-                binding.sevenDay.setAdapter ( futureAdapter );
+                weatherFragmentBinding.sevenDay.setAdapter ( futureAdapter );
             }
-        } );
 
-        seven7DayViewModel.getStatusInfo ().observe ( getViewLifecycleOwner(), new Observer<String> () {
-            @SuppressLint("ShowToast")
-            @Override
-            public void onChanged(String s) {
-                if (toast == null){
-                    toast = Toast.makeText ( getContext (),s,Toast.LENGTH_SHORT );
-                }else {
-                    toast.setText ( s );
-                }
-                toast.show ();
-            }
         } );
 
     }
+    public String getCity() {
+        return city;
+    }
 
-
-
+    public String getWeek(int i){
+        switch (i){
+            case 1:
+                return "一";
+            case 2:
+                return "二";
+            case 3:
+                return "三";
+            case 4:
+                return "四";
+            case 5:
+                return "五";
+            case 6:
+                return "六";
+            case 7:
+                return "日";
+        }
+        return null;
+    }
 }

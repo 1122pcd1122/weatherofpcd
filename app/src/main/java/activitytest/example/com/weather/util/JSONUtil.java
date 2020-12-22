@@ -2,6 +2,9 @@ package activitytest.example.com.weather.util;
 
 import com.google.gson.Gson;
 
+import org.json.JSONObject;
+
+import activitytest.example.com.weather.db.bean.city.JSONRootCity;
 import activitytest.example.com.weather.db.bean.comfort.RootComfort;
 import activitytest.example.com.weather.db.bean.seven7d.Root7D;
 import activitytest.example.com.weather.db.bean.today.RootToday;
@@ -21,6 +24,10 @@ public class JSONUtil {
     public static RootComfort getRootComfort(String s){
         Gson gson = new Gson ();
         return gson.fromJson ( s,RootComfort.class );
+    }
+    public static JSONRootCity getRootCity(String s){
+        Gson gson = new Gson ();
+        return gson.fromJson ( s,JSONRootCity.class );
     }
 }
 

@@ -1,9 +1,15 @@
 package activitytest.example.com.weather.db.bean.seven7d;
 
 
+import android.annotation.SuppressLint;
+
 import com.google.gson.annotations.SerializedName;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Auto-generated: 2020-12-09 17:10:13
@@ -67,8 +73,16 @@ public class Daily {
     public void setFxDate(String fxDate){
         this.fxDate = fxDate;
     }
-    public String getFxDate(){
-        return this.fxDate;
+    public String getFxDate()  {
+        Calendar calendar = Calendar.getInstance ();
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat ("yyyy-MM-dd");
+        try {
+            calendar.setTime ( Objects.requireNonNull ( format.parse ( fxDate ) ) );
+        } catch (ParseException e) {
+            e.printStackTrace ();
+        }
+        String[] weekDays = { "星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六" };
+        return weekDays[calendar.get ( Calendar.DAY_OF_WEEK  ) - 1];
     }
     public void setSunrise(String sunrise){
         this.sunrise = sunrise;

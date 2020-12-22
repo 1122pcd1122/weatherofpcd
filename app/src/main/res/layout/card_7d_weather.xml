@@ -1,240 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="120dp"
-    app:cardBackgroundColor="#000000"
-    android:layout_margin="5dp"
-    app:cardCornerRadius="10dp">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <data>
+        <variable
+            name="daily"
+            type="activitytest.example.com.weather.db.bean.seven7d.Daily" />
+    </data>
 
+    <androidx.cardview.widget.CardView
+        android:layout_width="120dp"
+        android:layout_height="140dp"
+        app:cardBackgroundColor="#0A4EFB"
+        android:layout_margin="5dp"
+        app:cardCornerRadius="10dp">
 
-        <ImageView
-            android:id="@+id/icon"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:contentDescription="@string/text"
-            android:src="@drawable/yun"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.043"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.177" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <LinearLayout
-            android:layout_width="145dp"
-            android:layout_height="30dp"
-            android:background="@drawable/feellike_boder"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.18">
+            <ImageView
+                android:id="@+id/backColor"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
+            </ImageView>
+
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/yun"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.177"
+                tools:ignore="ContentDescription,MissingConstraints">
+
+            </ImageView>
 
             <TextView
                 android:id="@+id/textView"
-                android:layout_width="50dp"
-                android:layout_height="30dp"
-                android:gravity="center"
-                android:text="温度"
-                android:textColor="@color/white"
-                android:textSize="13sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="48dp"
+                android:gravity="center_horizontal"
+                android:text='@{daily.tempMin+"℃/"+daily.tempMax+"℃"}'
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.369"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.488" />
-
-            <TextView
-                android:id="@+id/tempMin"
-                android:layout_width="25dp"
-                android:layout_height="30dp"
-                android:gravity="center"
-                android:text="@string/tempMin"
-                android:textAlignment="textEnd"
-                android:textColor="@color/white"
-                android:textSize="15sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.482"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.511"
-                tools:ignore="RtlCompat" />
+                app:layout_constraintTop_toBottomOf="@+id/icon"
+                app:layout_constraintVertical_bias="0.7" />
 
             <TextView
                 android:id="@+id/textView2"
-                android:layout_width="15dp"
-                android:layout_height="30dp"
-                android:gravity="center"
-                android:text="@string/c"
-                android:textAlignment="textStart"
-                android:textColor="@color/white"
-                android:textSize="15sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{daily.fxDate}"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/tempMin"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="RtlCompat" />
-
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_width="10dp"
-                android:layout_height="30dp"
-                android:gravity="center"
-                android:paddingStart="5dp"
-                android:text="@string/xiegang"
-                android:textColor="@color/white"
-                android:textSize="15sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/textView2"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tempMax"
-                android:layout_width="25dp"
-                android:layout_height="30dp"
-                android:gravity="center"
-                android:text="@string/tempMax"
-                android:textAlignment="textEnd"
-                android:textColor="@color/white"
-                android:textSize="15sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/textView3"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="RtlCompat" />
-
-            <TextView
-                android:id="@+id/textView5"
-                android:layout_width="20dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="5dp"
-                android:gravity="center"
-                android:text="@string/c"
-                android:textColor="@color/white"
-                android:textSize="15sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/tempMax"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/fxDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/obsTime"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.946"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.46" />
-
-        <TextView
-            android:id="@+id/whiteText"
-            android:layout_width="30dp"
-            android:layout_height="20dp"
-            android:background="@drawable/feellike_boder"
-            android:gravity="center"
-            android:text="@string/text"
-            android:textColor="@color/white"
-            android:textSize="13sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.174"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.23000002" />
-
-        <TextView
-            android:id="@+id/nightText"
-            android:layout_width="30dp"
-            android:layout_height="20dp"
-            android:background="@drawable/feellike_boder"
-            android:gravity="center"
-            android:text="@string/text"
-            android:textColor="@color/white"
-            android:textSize="13sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.174"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.77" />
-
-        <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="145dp"
-            android:layout_height="30dp"
-            android:background="@drawable/feellike_boder"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.79">
-
-            <TextView
-                android:id="@+id/ziwaixian"
-                android:layout_width="100dp"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="紫外线强度指数"
-                android:textColor="@color/white"
-                android:textSize="13sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.661"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.802" />
-
-            <TextView
-                android:id="@+id/uv"
-                android:layout_width="20dp"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="@string/uv"
-                android:textColor="@color/white"
-                android:textSize="13sp"
-                tools:ignore="InvalidId">
-
-            </TextView>
-
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/iconNight"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.043"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.822"
-            app:srcCompat="@drawable/yun" />
+                app:layout_constraintVertical_bias="0.9" />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-</androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
+</layout>

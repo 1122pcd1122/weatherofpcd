@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
+import activitytest.example.com.weather.db.bean.city.JSONRootCity;
+import activitytest.example.com.weather.db.bean.city.Location;
 import activitytest.example.com.weather.db.bean.comfort.ComfortNow;
 import activitytest.example.com.weather.db.bean.comfort.RootComfort;
 import activitytest.example.com.weather.db.bean.seven7d.Daily;
@@ -31,6 +33,7 @@ public class WeatherRepository {
     private static MutableLiveData<List<Daily>> listDailyMutableLiveData;
     private static MutableLiveData<String> statusInfoMutableLiveData;
     private static MutableLiveData<List<ComfortNow>> listComfortNowMutableLiveData;
+    private static MutableLiveData<Location> listCityFortMutableLiveData;
 
     private static final String TAG="WeatherRepository";
 
@@ -42,7 +45,7 @@ public class WeatherRepository {
             listDailyMutableLiveData = new MutableLiveData<> ();
             statusInfoMutableLiveData = new MutableLiveData<> ();
             listComfortNowMutableLiveData = new MutableLiveData<> ();
-
+            listCityFortMutableLiveData = new MutableLiveData<> ();
         }
 
         return repository;
@@ -104,14 +107,15 @@ public class WeatherRepository {
 
                 if (ErrorCode.equals ( "200" )){
                     listDailyMutableLiveData.postValue ( root7D.getDaily () );
+                    Log.d ( TAG,"状态码:"+root7D.getCode ()+"" );
+                    Log.d ( TAG,"该城市的天气预报和实况自适应网页"+root7D.getFxLink ()+"" );
+                    Log.d ( TAG,"更新时间"+root7D.getUpdateTime () +"");
+                    Log.d ( TAG,"即时天气"+root7D.getDaily () );
+                    Log.d ( TAG,"天气资源"+root7D.getRefer ().getSources ().get ( 0 ) );
+                    Log.d ( TAG,"许可证"+root7D.getRefer ().getLicense ().get ( 0 ) );
                 }
 
-                Log.d ( TAG,"状态码:"+root7D.getCode ()+"" );
-                Log.d ( TAG,"该城市的天气预报和实况自适应网页"+root7D.getFxLink ()+"" );
-                Log.d ( TAG,"更新时间"+root7D.getUpdateTime () +"");
-                Log.d ( TAG,"即时天气"+root7D.getDaily () );
-                Log.d ( TAG,"天气资源"+root7D.getRefer ().getSources ().get ( 0 ) );
-                Log.d ( TAG,"许可证"+root7D.getRefer ().getLicense ().get ( 0 ) );
+
 
             }
         } );
@@ -138,25 +142,59 @@ public class WeatherRepository {
 
                 if (ErrorCode.equals ( "200" )){
                     listComfortNowMutableLiveData.postValue ( rootComfort.getComfortNow () );
+                    Log.d ( TAG,"状态码:"+rootComfort.getCode ()+"" );
+                    Log.d ( TAG,"该城市的天气预报和实况自适应网页"+rootComfort.getFxLink ()+"" );
+                    Log.d ( TAG,"更新时间"+rootComfort.getUpdateTime () +"");
+                    Log.d ( TAG,"天气建议"+rootComfort.getComfortNow () );
+                    Log.d ( TAG,"天气资源"+rootComfort.getRefer ().getSources ().get ( 0 ) );
+                    Log.d ( TAG,"许可证"+rootComfort.getRefer ().getLicense ().get ( 0 ) );
                 }
 
-                Log.d ( TAG,"状态码:"+rootComfort.getCode ()+"" );
-                Log.d ( TAG,"该城市的天气预报和实况自适应网页"+rootComfort.getFxLink ()+"" );
-                Log.d ( TAG,"更新时间"+rootComfort.getUpdateTime () +"");
-                Log.d ( TAG,"即时天气"+rootComfort.getComfortNow () );
-                Log.d ( TAG,"天气资源"+rootComfort.getRefer ().getSources ().get ( 0 ) );
-                Log.d ( TAG,"许可证"+rootComfort.getRefer ().getLicense ().get ( 0 ) );
+
             }
         } );
     }
+
+    public void getCityID(String cityName){
+        OkhttpUtil.getCityCode ( cityName, new Callback () {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Log.d ( TAG,"网络连接失败" );
+
+                statusInfoMutableLiveData.postValue ( "网络连接失败" );
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                Log.d ( TAG,"网络连接成功" );
+                String s = Objects.requireNonNull ( response.body () ).string ();
+
+                Log.d ( TAG,"城市信息:"+s );
+
+                JSONRootCity jsonRootCity = JSONUtil.getRootCity ( s );
+                String ErrorCode = jsonRootCity.getCode ();
+
+                if (ErrorCode.equals ( "200" )){
+                    listCityFortMutableLiveData.postValue ( jsonRootCity.getLocation ().get ( 0 ) );
+                    Log.d ( TAG,"状态码:"+jsonRootCity.getCode ()+"" );
+                    Log.d ( TAG,"位置信息"+jsonRootCity.getLocation () +"");
+                    Log.d ( TAG,"天气资源"+jsonRootCity.getRefer ().getSources ().get ( 0 ) );
+                    Log.d ( TAG,"许可证"+jsonRootCity.getRefer ().getLicense ().get ( 0 ) );
+                }else if (ErrorCode.equals ( "404" )){
+                    listCityFortMutableLiveData.postValue ( null );
+                }
+
+
+            }
+        } );
+    }
+
 
     /**
      * @return 获取今日天气
      */
     public LiveData<Now> getToday(){
-//        if (realTimeDao.getRealTime ().getValue () != null){
-//            return realTimeDao.getRealTime ();
-//        }
+
         return nowMutableLiveData;
     }
 
@@ -165,9 +203,6 @@ public class WeatherRepository {
      */
     public LiveData<List<Daily>> get7D(){
 
-//        if (Objects.requireNonNull ( futureDao.getFutures ().getValue () ).size () != 0){
-//            return futureDao.getFutures ();
-//        }
         return listDailyMutableLiveData;
     }
 
@@ -175,12 +210,10 @@ public class WeatherRepository {
         return listComfortNowMutableLiveData;
     }
 
-    /**
-     * @return 获取状态码
-     */
-    public LiveData<String> getStatus_Code(){
 
-        return statusInfoMutableLiveData;
+
+    public LiveData<Location> getLocation(){
+        return listCityFortMutableLiveData;
     }
 
 //    static class InsertAsyncTask extends AsyncTask<Future ,Void ,Void>{

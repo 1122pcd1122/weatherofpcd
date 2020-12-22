@@ -31,7 +31,5 @@ public class Seven7DayViewModel extends AndroidViewModel {
         return weatherRepository.get7D ();
     }
 
-    public LiveData<String> getStatusInfo(){
-        return weatherRepository.getStatus_Code ();
-    }
+
 }

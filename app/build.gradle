@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "activitytest.example.com.weather"
-        minSdkVersion 26
+        minSdkVersion 14
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"

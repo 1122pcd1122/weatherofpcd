@@ -3,8 +3,11 @@ package activitytest.example.com.weather.db.bean.today;
 
 
 
-import java.util.Date;
+import android.annotation.SuppressLint;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 
 /**
@@ -30,11 +33,16 @@ public class Now {
     private String vis;
     private String cloud;
     private String dew;
+
     public void setObsTime(Date obsTime) {
-        this.obsTime = obsTime;
+
+
+        this.obsTime = obsTime ;
     }
-    public Date getObsTime() {
-        return obsTime;
+    public String getObsTime() {
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat ("hh:mm aa", Locale.ENGLISH );
+        return simpleDateFormat.format ( obsTime );
+
     }
 
     public void setTemp(String temp) {

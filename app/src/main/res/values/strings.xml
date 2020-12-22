@@ -1,22 +1,9 @@
 <resources>
     <string name="app_name">Weather</string>
-    <string name="cityHint">请输入城市信息</string>
-    <string name="button">查询</string>
-    <string name="temperature">…</string>
-    <string name="wid">…</string>
-    <string name="direct">…</string>
-    <string name="info">…</string>
-    <string name="aqi">…</string>
-    <string name="date">…</string>
-    <string name="wid_day">…</string>
-    <string name="wid_night">…</string>
-    <string name="todo">TODO</string>
-    <string name="speedWord">级</string>
-    <string name="c">℃</string>
-    <string name="bodyFeeling">体感温度:</string>
-    <string name="comfort">白天天气晴好，但仍会使您感觉偏冷，不舒适，请注意适时添加衣物，以防感冒。</string>
-    <string name="tempMax">-1</string>
-    <string name="xiegang">/</string>
-    <string name="tempMin">-2</string>
-    <string name="uv">3</string>
+    <string name="today">今天</string>
+    <string name="windDir">风向</string>
+    <string name="humidity">相对湿度</string>
+    <string name="thisWeek">本周</string>
+    <string name="advice">生活指数</string>
+
 </resources>

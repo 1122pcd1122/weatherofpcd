@@ -36,9 +36,7 @@ public class TodayViewModel extends AndroidViewModel {
         return weatherRepository.getComfortNow ();
     }
 
-    public LiveData<String> getStatusInfo(){
-        return weatherRepository.getStatus_Code ();
-    }
+
 
 
 }
