@@ -13,18 +13,40 @@
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="#151515">
+            style="@style/toolBar">
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#151515">
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/more"
+                    android:layout_width="60dp"
+                    android:layout_height="30dp"
+                    android:layout_margin="10dp"
+                    android:src="@drawable/more"
+                    android:contentDescription="@string/advice">
+
+                </ImageView>
+
+                <ImageButton
+                    android:id="@+id/search"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/search"
+                    android:layout_marginRight="25dp"
+                    android:layout_marginTop="15dp"
+                    android:contentDescription="@string/advice"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="25dp">
+
+                </ImageButton>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:textColor="#FFFFFF"
                     android:text="@{cityName}"
                     android:gravity="center"
                     android:textAlignment="center"
@@ -35,7 +57,5 @@
             </RelativeLayout>
 
         </com.google.android.material.appbar.AppBarLayout>
-
-
     </LinearLayout>
 </layout>

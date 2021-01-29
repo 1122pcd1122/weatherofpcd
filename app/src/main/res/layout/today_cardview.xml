@@ -15,13 +15,13 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="280dp"
-        android:background="#151515">
+        android:background="@color/backGroundColor">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/today"
-            android:textColor="#EAEAEA"
+            android:textColor="@color/dayTextColor"
             android:textSize="20sp"
             android:textStyle="bold"
             android:layout_marginStart="13dp"
@@ -39,12 +39,12 @@
             android:layout_marginLeft="10dp"
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginBottom="20dp">
+            android:layout_marginTop="50dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                style="@style/today_cardView">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -52,7 +52,6 @@
                     android:text="@{week}"
                     android:textStyle="normal"
                     android:textSize="15sp"
-                    android:textColor="#DFDFDF"
                     android:layout_margin="15dp">
 
                 </TextView>
@@ -63,7 +62,6 @@
                     android:text="@{now.obsTime}"
                     android:layout_margin="15dp"
                     android:textSize="15sp"
-                    android:textColor="#DFDFDF"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     tools:ignore="RelativeOverlap" />
@@ -75,7 +73,8 @@
                     android:layout_gravity="center"
                     android:src="@drawable/yun"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="30dp" />
+                    android:layout_marginTop="30dp"
+                    android:contentDescription="@string/today" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -83,7 +82,6 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="110dp"
                     android:text='@{now.temp +"℃"}'
-                    android:textColor="#FFFFFF"
                     android:textSize="35sp"/>
 
 
@@ -92,7 +90,6 @@
                     android:layout_height="wrap_content"
                     android:text="@string/windDir"
                     android:textSize="15sp"
-                    android:textColor="#6D6D6D"
                     android:layout_alignParentBottom="true"
                     android:layout_margin="15dp"/>
 
@@ -101,7 +98,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
                     android:text="@{now.windDir}"
-                    android:textColor="#EBEBEB"
                     android:textSize="15sp"
                     android:layout_marginBottom="15dp"
                     android:layout_marginStart="50dp"
@@ -116,7 +112,6 @@
                     android:textSize="15sp"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentBottom="true"
-                    android:textColor="#6D6D6D"
                     android:layout_marginBottom="15dp"
                     android:layout_marginRight="45dp"
                     android:layout_alignParentRight="true"
@@ -128,7 +123,6 @@
                     android:layout_height="wrap_content"
                     android:text='@{now.humidity + "％"}'
                     android:textSize="15sp"
-                    android:textColor="#EBEBEB"
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
@@ -143,7 +137,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{now.text}"
-                    android:textColor="#DEDEDE"
                     android:textSize="15sp"
                     android:layout_centerHorizontal="true"
                     android:layout_alignParentBottom="true"

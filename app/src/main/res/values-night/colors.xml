@@ -7,11 +7,11 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="backGroundColor">#FFFFFF</color>
-    <color name="barTextColor">#343434</color>
-    <color name="cardView">#DDDDDD</color>
-    <color name="cardTextColor">#414141</color>
-    <color name="dayTextColor">#323232</color>
-    <color name="hintBackColor">#EAEAEA</color>
-    <color name="statusBarColor">#FFFFFF</color>
+    <color name="backGroundColor">#151515</color>
+    <color name="barTextColor">#E4E4E4</color>
+    <color name="cardView">#2F2F2F</color>
+    <color name="cardTextColor">#FFFFFF</color>
+    <color name="dayTextColor">#EAEAEA</color>
+    <color name="hintBackColor">#2F2F2F</color>
+    <color name="statusBarColor">#151515</color>
 </resources>

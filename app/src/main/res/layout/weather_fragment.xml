@@ -44,14 +44,14 @@
                 android:id="@+id/thisWeek"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:background="#151515"
+                android:background="@color/backGroundColor"
                 android:layout_below="@+id/today_cardView">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/thisWeek"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/dayTextColor"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:layout_margin="13dp">
@@ -74,14 +74,14 @@
                 android:layout_below="@+id/thisWeek"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#151515"
+                android:background="@color/backGroundColor"
                 >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/advice"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/dayTextColor"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:layout_margin="13dp">

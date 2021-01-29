@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -30,10 +31,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.support.v4.app.INotificationSideChannel;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -51,8 +54,7 @@ public class WeatherFragment extends Fragment {
     private LocationViewModel locationViewModel;
     private WeatherFragmentBinding weatherFragmentBinding;
     private TodayCardviewBinding todayCardviewBinding;
-    private AdviceLayoutBinding adviceLayoutBinding;
-    private Toast toast ;
+
     public String city;
 
 
@@ -68,18 +70,28 @@ public class WeatherFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         weatherFragmentBinding = DataBindingUtil.bind ( LayoutInflater.from ( getContext () ).inflate ( R.layout.weather_fragment, container, false ) );
         todayCardviewBinding  = DataBindingUtil.bind ( LayoutInflater.from ( getContext () ).inflate ( R.layout.today_cardview, container, false ) );
-        adviceLayoutBinding = DataBindingUtil.bind ( LayoutInflater.from ( getContext () ).inflate ( R.layout.advice_layout ,container,false) );
+
         //设置recycleView样式
         setRecycleViewModel ();
-
-
         getData ();
 
         return weatherFragmentBinding.getRoot ();
     }
 
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated ( savedInstanceState );
+        ImageButton imageButton = getView ().findViewById ( R.id.search );
+        imageButton.setOnClickListener ( new View.OnClickListener () {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent (getActivity (),SearchActivity.class);
+                startActivity ( intent );
 
+            }
+        } );
+    }
 
     public void getData() {
 
